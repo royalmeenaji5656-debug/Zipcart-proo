@@ -2,9 +2,7 @@ package com.zipcart.pro
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -14,23 +12,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // 1. कार्ट और प्रोफाइल बटन का लॉजिक
         val cartBadge = findViewById<TextView>(R.id.cart_badge)
-        val btnBuyIphone = findViewById<Button>(R.id.btn_buy_iphone)
-        val btnBuySony = findViewById<Button>(R.id.btn_buy_sony)
+        cartBadge.setOnClickListener { startActivity(Intent(this, CartActivity::class.java)) }
 
-        // कार्ट में आइटम जोड़ने का काम
-        val addToCartAction = { itemName: String ->
-            cartCount++
-            cartBadge.text = "🛒 $cartCount"
-            Toast.makeText(this, "$itemName added to your cart!", Toast.LENGTH_SHORT).show()
+        // 2. बॉटम नेविगेशन के बटन (Profile पर क्लिक करने पर प्रोफाइल खुलेगी)
+        // ध्यान दें: activity_main.xml में आईडी के हिसाब से इसे सेट किया है
+        val btnProfile = findViewById<LinearLayout>(R.id.nav_profile)
+        btnProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        btnBuyIphone.setOnClickListener { addToCartAction("iPhone 15 Pro") }
-        btnBuySony.setOnClickListener { addToCartAction("Sony Headphones") }
+        // 3. सर्च बार का लॉजिक (सर्च करते ही मैसेज दिखाएगा)
+        val searchBar = findViewById<EditText>(R.id.search_bar)
+        searchBar.setOnEditorActionListener { v, _, _ ->
+            Toast.makeText(this, "Searching for: ${v.text}", Toast.LENGTH_SHORT).show()
+            true
+        }
 
-        // ऊपर कार्ट आइकॉन पर क्लिक करने पर Cart पेज खुलेगा
-        cartBadge.setOnClickListener {
-            startActivity(Intent(this, CartActivity::class.java))
+        // प्रोडक्ट बटन
+        findViewById<Button>(R.id.btn_buy_iphone).setOnClickListener {
+            cartCount++
+            cartBadge.text = "🛒 $cartCount"
+            Toast.makeText(this, "iPhone added!", Toast.LENGTH_SHORT).show()
         }
     }
 }
